@@ -1,0 +1,20 @@
+---
+import { IMG_URL } from "../utils/constants";
+const { pic } = Astro.props;
+
+const { image, userName, hashtags, userId } = pic;
+
+function replaceHashtagsWithLinks(text: string) {
+    return text.replace(/#(\w+)/g, '<a href="/hashtag/$1">#$1</a>');
+}
+---
+
+<article class=" flex flex-col gap-2">
+    <h2 class="text-white text-sm pl-4">{userName}</h2>
+    <div class="m-auto">
+        <img class="w-auto max-h-44" src={`${IMG_URL}/${image}`} alt={image} />
+    </div>
+    <h1 class="text-xs">
+        <Fragment set:html={replaceHashtagsWithLinks(hashtags)} />
+    </h1>
+</article>

@@ -1,0 +1,47 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { API_URL } from "../utils/constants";
+import { type ImgInfo } from "../types";
+import Footer from "../components/FooterMain.astro";
+import Pic from "../components/Pic.astro";
+
+if (!Astro.cookies.has("token")) {
+    return Astro.redirect("/login");
+}
+const imagesResponse = await fetch(API_URL + "allimages");
+const images = await imagesResponse.json();
+---
+
+<Layout title="astroPics">
+    <div>
+        <h1 class="text-start p-4">Latest <span class="text-purple-800">Pics</span></h1>
+        <main class="flex flex-col gap-16">
+            {images.map((imgInfo: ImgInfo) => <Pic pic={imgInfo} />)}
+        </main>
+        <footer>
+            <Footer />
+        </footer>
+    </div>
+</Layout>
+
+<style>
+    main {
+        margin: auto;
+        width: 100%;
+        color: white;
+        font-size: 20px;
+    }
+    h1 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 1em;
+    }
+    .text-gradient {
+        background-image: var(--accent-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-size: 400%;
+        background-position: 0%;
+    }
+</style>

@@ -1,0 +1,64 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { API_URL } from "../utils/constants";
+
+if (Astro.request.method === "POST") {
+    try {
+        const formData = await Astro.request.formData();
+        const nameForm = formData.get("name");
+        const passwordForm = formData.get("password");
+        const LoginRequest = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name: nameForm,
+                password: passwordForm,
+            }),
+        };
+        const response = await fetch(API_URL + "register", {
+            ...LoginRequest,
+            credentials: "include",
+        });
+        const data = await response.json();
+        if (data.error) throw new Error(data.error);
+        return Astro.redirect("/login");
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error(error.message);
+        }
+    }
+}
+---
+
+<Layout title="New user">
+    <form
+        class="flex flex-col justify-center items-center gap-4 h-full w-3/5 m-auto"
+        method="POST"
+    >
+        <input type="text" name="name" id="nameInput" placeholder="Name" />
+        <input
+            type="password"
+            name="password"
+            id="passwordInput"
+            placeholder="Password"
+        />
+        <button class="bg-purple-800 w-full p-1 rounded-lg text-white"
+            >Create account</button
+        >
+    </form>
+</Layout>
+
+<style>
+    input {
+        width: 100%;
+        color: white;
+        background-color: rgb(46, 46, 47);
+        padding: 0.25rem 0 0.25rem 0.5rem;
+        border-radius: 0.5rem;
+    }
+    input::placeholder {
+        color: rgb(201, 201, 201);
+    }
+</style>
